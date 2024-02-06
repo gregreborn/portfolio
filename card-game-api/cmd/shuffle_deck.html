@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shuffle Deck</title>
+    <style>
+        .message {
+            margin-top: 20px;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>Shuffle Deck</h1>
+    <form id="shuffleForm">
+        <label for="deckID">Deck ID:</label>
+        <input type="text" id="deckID" name="deckID" required>
+        <br><br>
+        <button type="button" onclick="shuffleDeck()">Shuffle Deck</button>
+    </form>
+
+    <h2 class="message" id="shuffleMessage"></h2>
+
+    <script>
+        async function shuffleDeck() {
+            const deckID = document.getElementById('deckID').value;
+            const response = await fetch(`/deck/shuffle/${deckID}`);
+            const data = await response.json();
+
+            const shuffleMessage = document.getElementById('shuffleMessage');
+            if (data.message) {
+                shuffleMessage.textContent = data.message;
+            } else {
+                shuffleMessage.textContent = 'Error shuffling deck.';
+                shuffleMessage.style.color = 'red';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draw Cards from Deck</title>
+    <style>
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .card {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Draw Cards from Deck</h1>
+    <form id="drawForm">
+        <label for="deckID">Deck ID:</label>
+        <input type="text" id="deckID" name="deckID" required>
+        <br>
+        <label for="numCards">Number of Cards:</label>
+        <input type="number" id="numCards" name="numCards" value="1" min="1">
+        <br><br>
+        <button type="button" onclick="drawCards()">Draw Cards</button>
+    </form>
+
+    <h2>Drawn Cards:</h2>
+    <div class="cards-container" id="cardsContainer"></div>
+
+    <script>
+        async function drawCards() {
+            const deckID = document.getElementById('deckID').value;
+            const numCards = document.getElementById('numCards').value;
+            const response = await fetch(`/deck/${deckID}/draw/${numCards}`);
+            const data = await response.json();
+
+            const cardsContainer = document.getElementById('cardsContainer');
+            cardsContainer.innerHTML = ''; 
+
+            for (let card of data.cards) {
+                const cardImg = document.createElement('img');
+                cardImg.src = card.image;
+                cardImg.alt = card.code;
+                cardImg.className = 'card';
+                cardsContainer.appendChild(cardImg);
+            }
+        }
+    </script>
+</body>
+</html>

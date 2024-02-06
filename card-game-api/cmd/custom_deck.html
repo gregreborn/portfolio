@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Custom Cards</title>
+    <script>
+        function updateActionUrl() {
+            const deckid = document.getElementById("deckid").value;
+            const form = document.getElementById("customDeckForm");
+            form.action = "/deck/" + deckid + "/add";
+        }
+    </script>
+</head>
+<body>
+
+    <h2>Update Deck</h2>
+
+    <form id="customDeckForm" action="#" method="POST" onsubmit="updateActionUrl()">
+        <label for="deckid">Deck ID:</label>
+    <input type="text" id="deckid" name="deckid" required><br><br>
+
+        <label for="cards">Specify Cards (comma separated):</label>
+        <input type="text" id="cards" name="cardsToAdd" placeholder="e.g. AS,2D,3C" required><br><br>
+
+        <input type="submit" value="Create Custom Deck">
+    </form>
+    
+    <p>Note: Specify the cards using their codes (e.g., AS for Ace of Spades, 2D for 2 of Diamonds, etc.). Separate each card with a comma.</p>
+    
+</body>
+</html>
