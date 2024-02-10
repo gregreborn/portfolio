@@ -1,0 +1,60 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:TP2_Reseau.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="TP2_Reseau.Views.ChatView"
+        x:DataType="vm:ChatViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="ChatView">
+
+    <DockPanel>
+        <!-- Chat Messages Display -->
+        <ItemsControl DockPanel.Dock="Top" Height="300" ItemsSource="{Binding Messages}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding SenderId}" FontWeight="Bold"/>
+                        <TextBlock Text=": "/>
+                        <TextBlock Text="{Binding Content}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- Inputs, ComboBox and Buttons -->
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Vertical" HorizontalAlignment="Center">
+            <!-- Server Connection Inputs -->
+            <StackPanel Orientation="Horizontal">
+                <TextBox Width="100"
+                         Text="{Binding ServerPort, Mode=TwoWay}"
+                         Watermark="Server Port" />
+                <Button Content="Connect"
+                        Command="{Binding ConnectCommand}" />
+            </StackPanel>
+
+            <!-- Peer Selection ComboBox -->
+            <!-- Peer Selection ComboBox -->
+            <ComboBox ItemsSource="{Binding Peers}"
+                      SelectedItem="{Binding SelectedPeer, Mode=TwoWay}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding DisplayText}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+
+
+            <!-- Message Sending Inputs -->
+            <StackPanel Orientation="Horizontal">
+                <TextBox Width="300" 
+                         Text="{Binding CurrentMessage, Mode=TwoWay}" 
+                         Watermark="Type your message here..." />
+                <Button Content="Send" 
+                        Command="{Binding SendMessageCommand}" />
+            </StackPanel>
+        </StackPanel>
+    </DockPanel>
+</Window>

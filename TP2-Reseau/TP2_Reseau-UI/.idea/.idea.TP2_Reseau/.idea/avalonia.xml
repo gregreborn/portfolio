@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="TP2_Reseau/App.axaml" value="TP2_Reseau/TP2_Reseau.csproj" />
+        <entry key="TP2_Reseau/Views/ChatView.axaml" value="TP2_Reseau/TP2_Reseau.csproj" />
+        <entry key="TP2_Reseau/Views/MainWindow.axaml" value="TP2_Reseau/TP2_Reseau.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

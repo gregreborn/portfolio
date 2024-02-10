@@ -1,0 +1,16 @@
+{
+    "peers": {
+        "uuid1": {
+            "id": "uuid1",
+            "tcp_address": "localhost:8081",
+            "udp_address": "localhost:8082",
+            "preferred_protocol": "TCP"
+        },
+        "uuid2": {
+            "id": "uuid2",
+            "tcp_address": "localhost:8086",
+            "udp_address": "localhost:8087",
+            "preferred_protocol": "TCP"
+        }
+    }
+}
