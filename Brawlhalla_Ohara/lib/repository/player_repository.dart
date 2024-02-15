@@ -8,7 +8,7 @@ class PlayerRepository {
 
   PlayerRepository(this._apiService);
 
-  Future<Player> getPlayerStats(int brawlhallaId) async {
+  Future<Player> fetchPlayerById(int brawlhallaId) async {
     try {
       return await _apiService.getStatsById(brawlhallaId);
     } catch (e) {
@@ -19,4 +19,29 @@ class PlayerRepository {
       rethrow;
     }
   }
+
+  Future<Player> fetchPlayerBySteamId(String steamId) async {
+    try {
+      return await _apiService.getStatsBySteamId(steamId);
+    } catch (e) {
+      // Handle or rethrow the exception
+      if (kDebugMode) {
+        print(e);
+      }
+      rethrow;
+    }
+  }
+
+  Future<Player> fetchPlayerBySteamUrl(String steamUrl) async {
+    try {
+      return await _apiService.getStatsBySteamUrl(steamUrl);
+    } catch (e) {
+      // Handle or rethrow the exception
+      if (kDebugMode) {
+        print(e);
+      }
+      rethrow;
+    }
+  }
+
 }

@@ -2,29 +2,19 @@ import 'package:equatable/equatable.dart';
 
 import '../../models/player.dart';
 
-abstract class PlayerState extends Equatable {
-  @override
-  List<Object> get props => [];
-}
+// player_state.dart
+abstract class PlayerState {}
 
-class PlayerInitial extends PlayerState {}
+class PlayerLoading extends PlayerState {}
 
-class PlayerLoadInProgress extends PlayerState {}
-
-class PlayerLoadSuccess extends PlayerState {
+class PlayerLoaded extends PlayerState {
   final Player player;
 
-  PlayerLoadSuccess(this.player);
-
-  @override
-  List<Object> get props => [player];
+  PlayerLoaded(this.player);
 }
 
-class PlayerLoadFailure extends PlayerState {
-  final String error;
+class PlayerError extends PlayerState {
+  final String message;
 
-  PlayerLoadFailure(this.error);
-
-  @override
-  List<Object> get props => [error];
+  PlayerError(this.message);
 }

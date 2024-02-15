@@ -1,30 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:brawlhalla_ohara/bloc/player_bloc/player_bloc.dart';
-import 'package:brawlhalla_ohara/bloc/player_bloc/player_event.dart';
-import 'package:brawlhalla_ohara/bloc/player_bloc/player_state.dart';
+import '../bloc/player_bloc/player_bloc.dart';
+import '../bloc/player_bloc/player_state.dart';
+import '../widgets/LoadingIndicator.dart';
 
 class PlayerProfileScreen extends StatelessWidget {
-  final int brawlhallaId;
+  final String? playerIdentifier; // Can be brawlhallaId, steamId, or steamUrl
 
-  const PlayerProfileScreen({Key? key, required this.brawlhallaId}) : super(key: key);
+  const PlayerProfileScreen({Key? key, this.playerIdentifier}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => PlayerBloc()..add(PlayerFetchRequested(brawlhallaId)),
-      child: BlocBuilder<PlayerBloc, PlayerState>(
+    // Assuming the necessary fetching logic is handled prior to navigation
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Player Profile'),
+      ),
+      body: BlocBuilder<PlayerBloc, PlayerState>(
         builder: (context, state) {
-          if (state is PlayerLoadInProgress) {
-            return Center(child: CircularProgressIndicator());
-          } else if (state is PlayerLoadSuccess) {
-            return Text('Player Name: ${state.player.name}');
-            // Customize with actual player details
-          } else if (state is PlayerLoadFailure) {
-            return Center(child: Text('Failed to load player data'));
-          } else {
-            return Container(); // Fallback for unhandled states
+          if (state is PlayerLoading) {
+            return LoadingIndicator();
+          } else if (state is PlayerLoaded) {
+            return ListView(
+              children: <Widget>[
+                ListTile(
+                  title: const Text('Name'),
+                  subtitle: Text(state.player.name),
+                ),
+                // Add more ListTiles for other player attributes
+              ],
+            );
+          } else if (state is PlayerError) {
+            return Center(
+              child: Text('Error: ${state.message}'),
+            );
           }
+          return const Center(child: Text('Enter a valid ID to view profile.')); // For uninitialized or invalid state
         },
       ),
     );

@@ -54,21 +54,22 @@ class ApiService {
     return Player.fromJson(jsonResponse);
   }
 
-  Future<dynamic> getAllLegends() async {
+  Future<List<Legend>> getAllLegends() async {
     final jsonResponse = await _get('legends/all');
-    return Legend.fromJson(jsonResponse);
+    List<dynamic> legendsData = jsonResponse['data'];
+    return legendsData.map((legendData) => Legend.fromJson(legendData)).toList();
   }
 
-  Future<dynamic> getLegendById(int legendId) async {
+  Future<Legend> getLegendById(int legendId) async {
     final jsonResponse = await _get('legends/id?legend_id=$legendId');
-    return Legend.fromJson(jsonResponse);
-
+    return Legend.fromJson(jsonResponse['data']);
   }
 
-  Future<dynamic> getLegendByName(String legendName) async {
-   final jsonResponse= await _get('legends/name?legend_name=$legendName');
-    return Legend.fromJson(jsonResponse);
+  Future<Legend> getLegendByName(String legendName) async {
+    final jsonResponse = await _get('legends/name?legend_name=$legendName');
+    return Legend.fromJson(jsonResponse['data']);
   }
+
 
   Future<List<Ranking>> getRanked1v1Data(String region, int page) async {
     final jsonResponse = await _get('rankings/1v1/$region/$page');

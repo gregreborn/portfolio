@@ -1,17 +1,25 @@
-import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-abstract class PlayerEvent extends Equatable {
-  @override
-  List<Object?> get props => [];
+import '../../models/player.dart';
+import '../../repository/player_repository.dart';
+
+// player_event.dart
+abstract class PlayerEvent {}
+
+class FetchPlayerById extends PlayerEvent {
+  final int brawlhallaId;
+  FetchPlayerById(this.brawlhallaId);
 }
 
-class PlayerLoad extends PlayerEvent {
-  final int? brawlhallaId;
-  final String? steamId;
-  final String? steamUrl;
-
-  PlayerLoad({this.brawlhallaId, this.steamId, this.steamUrl});
-
-  @override
-  List<Object?> get props => [brawlhallaId, steamId ?? '', steamUrl ?? ''];
+class FetchPlayerBySteamId extends PlayerEvent {
+  final String steamId;
+  FetchPlayerBySteamId(this.steamId);
 }
+
+class FetchPlayerBySteamUrl extends PlayerEvent {
+  final String steamUrl;
+  FetchPlayerBySteamUrl(this.steamUrl);
+}
+
+
+

@@ -3,34 +3,45 @@ import 'package:brawlhalla_ohara/bloc/player_bloc/player_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../models/player.dart';
-import '../../services/api_service.dart';
+import '../../repository/player_repository.dart';
 
+// player_bloc.dart
 class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
-  final ApiService apiService;
+  final PlayerRepository playerRepository;
 
-  PlayerBloc({required this.apiService}) : super(PlayerInitial()) {
-    on<PlayerLoad>((event, emit) async {
-      emit(PlayerLoadInProgress());
+  PlayerBloc(this.playerRepository) : super(PlayerLoading()) {
+    on<FetchPlayerById>((event, emit) async {
+      emit(PlayerLoading());
       try {
-        Player? player;
-        if (event.brawlhallaId != null) {
-          player = await apiService.getStatsById(event.brawlhallaId!);
-        } else if (event.steamId != null) {
-          player = await apiService.getStatsBySteamId(event.steamId!);
-        } else if (event.steamUrl != null) {
-          player = await apiService.getStatsBySteamUrl(event.steamUrl!);
-        } else {
-          throw Exception("No valid identifier provided");
-        }
-        if (player != null) {
-          emit(PlayerLoadSuccess(player));
-        } else {
-          emit(PlayerLoadFailure("Player not found"));
-        }
+        final Player player = await playerRepository.fetchPlayerById(event.brawlhallaId);
+        emit(PlayerLoaded(player));
       } catch (error) {
-        emit(PlayerLoadFailure(error.toString()));
+        emit(PlayerError(error.toString()));
       }
     });
 
+    on<FetchPlayerBySteamId>((event, emit) async {
+      emit(PlayerLoading());
+      try {
+        //  repository has a method to fetch by Steam ID
+        final Player player = await playerRepository.fetchPlayerBySteamId(event.steamId);
+        emit(PlayerLoaded(player));
+      } catch (error) {
+        emit(PlayerError(error.toString()));
+      }
+    });
+
+    on<FetchPlayerBySteamUrl>((event, emit) async {
+      emit(PlayerLoading());
+      try {
+        //  repository has a method to fetch by Steam URL
+        final Player player = await playerRepository.fetchPlayerBySteamUrl(event.steamUrl);
+        emit(PlayerLoaded(player));
+      } catch (error) {
+        emit(PlayerError(error.toString()));
+      }
+    });
+
+    // Additional handlers for other events
   }
 }

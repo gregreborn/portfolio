@@ -1,82 +1,44 @@
-import 'package:brawlhalla_ohara/repository/player_repository.dart';
-import 'package:brawlhalla_ohara/services/api_service.dart';
-import 'package:brawlhalla_ohara/utils/routes.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:brawlhalla_ohara/utils/bloc_observer.dart';
-import 'package:brawlhalla_ohara/utils/theme.dart';
-import 'package:brawlhalla_ohara/utils/constants.dart';
+import 'bloc/player_bloc/player_bloc.dart';
+import 'repository/player_repository.dart';
+import 'services/api_service.dart';
+import 'utils/bloc_observer.dart';
+import 'utils/theme.dart';
+import 'views/HomeScreen.dart';
+//import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  //await Firebase.initializeApp();
+
+  // Assuming ApiService requires no initial configuration
   ApiService apiService = ApiService();
   PlayerRepository playerRepository = PlayerRepository(apiService);
 
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
   Bloc.observer = SimpleBlocObserver();
-  runApp(MyApp());
+
+  runApp(MyApp(playerRepository: playerRepository));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final PlayerRepository playerRepository;
+
+  const MyApp({Key? key, required this.playerRepository}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Brawlhalla Ohara',
-      theme: AppTheme.darkTheme,
-      initialRoute: RouteNames.home,
-      onGenerateRoute: AppRoutes.generateRoute,
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+    return RepositoryProvider.value(
+      value: playerRepository,
+      child: BlocProvider(
+        create: (context) => PlayerBloc(playerRepository),
+        child: MaterialApp(
+          title: 'Brawlhalla Ohara',
+          theme: AppTheme.darkTheme,
+          home: HomeScreen(),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
     );
   }
 }
+
