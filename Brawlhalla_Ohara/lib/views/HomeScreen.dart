@@ -5,7 +5,10 @@ import '../bloc/player_bloc/player_event.dart';
 import '../bloc/player_bloc/player_state.dart';
 import '../widgets/CustomAppBar.dart';
 import '../widgets/CustomButton.dart';
-import '../utils/routes.dart'; // Import your routes utilities
+import '../utils/routes.dart';
+import 'package:video_player/video_player.dart';
+import '../widgets/LoadingIndicator.dart';
+
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -16,73 +19,156 @@ class _HomeScreenState extends State<HomeScreen> {
   final _brawlhallaIdController = TextEditingController();
   final _steamIdController = TextEditingController();
   final _steamUrlController = TextEditingController();
+  late VideoPlayerController _controller;
+  bool _isLoading = false; // Step 1: Add a loading state variable
+
+
 
   void _submitCredentials() {
+    setState(() {
+      _isLoading = true; // Step 2: Set loading to true when submitting
+    });
     if (_brawlhallaIdController.text.isNotEmpty) {
-      context.read<PlayerBloc>().add(FetchPlayerById(int.parse(_brawlhallaIdController.text)));
+      final id = int.tryParse(_brawlhallaIdController.text);
+      if (id != null) {
+        print('Submitting Brawlhalla ID: $id');
+        context.read<PlayerBloc>().add(FetchPlayerById(id));
+      } else {
+        _showSnackBar('Invalid Brawlhalla ID');
+      }
     } else if (_steamIdController.text.isNotEmpty) {
+      print('Submitting Steam ID: ${_steamIdController.text}');
       context.read<PlayerBloc>().add(FetchPlayerBySteamId(_steamIdController.text));
     } else if (_steamUrlController.text.isNotEmpty) {
+      print('Submitting Steam URL: ${_steamUrlController.text}');
       context.read<PlayerBloc>().add(FetchPlayerBySteamUrl(_steamUrlController.text));
     } else {
-      // Consider showing a Snackbar or dialog to inform the user to fill in the fields
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Please fill at least one of the fields: Brawlhalla ID, Steam ID, or Steam URL.'),
-      ));
+      _showSnackBar('Please fill at least one of the fields: Brawlhalla ID, Steam ID, or Steam URL.');
+      setState(() => _isLoading = false); // Reset loading state if input is invalid
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.asset('assets/video/homeVideo.mp4')
+      ..initialize().then((_) {
+        _controller.play();
+        _controller.setLooping(true);
+        setState(() {}); // Update the UI when the video is initialized
+      });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<PlayerBloc, PlayerState>(
       listener: (context, state) {
-        if (state is PlayerLoaded) {
-          Navigator.of(context).pushNamed(
-            RouteNames.playerProfile,
-            arguments: state.player.brawlhallaId,
-          );
+        if (state is PlayerLoading) {
+          setState(() => _isLoading = true);
+        } else if (state is PlayerLoaded) {
+          Navigator.of(context).pushNamed(RouteNames.playerProfile, arguments: state.player.brawlhallaId.toString());
+          setState(() => _isLoading = false);
+        } else if (state is PlayerError) {
+          _showSnackBar('Error fetching player: ${state.message}');
+          setState(() => _isLoading = false);
         }
-        // Handle error state if necessary
       },
-      child: Scaffold(
-        appBar: CustomAppBar(title: 'Enter Your Details'),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              TextField(
-                controller: _brawlhallaIdController,
-                decoration: InputDecoration(
-                  labelText: 'Brawlhalla ID',
-                  hintText: 'Enter your Brawlhalla ID',
+      child: Stack(
+        children: [
+          Scaffold(
+            appBar: CustomAppBar(title: 'Enter Your Details'),
+            body: Column(
+              children: [
+                if (_controller.value.isInitialized)
+                  Expanded(
+                    flex: 1,
+                    child: AspectRatio(
+                      aspectRatio: _controller.value.aspectRatio,
+                      child: VideoPlayer(_controller),
+                    ),
+                  ),
+                Expanded(
+                  flex: 2,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+
+                        TextField(
+                          controller: _brawlhallaIdController,
+                          decoration: InputDecoration(
+                            labelText: 'Brawlhalla ID',
+                            hintText: 'Enter your Brawlhalla ID',
+                          ),
+                          onChanged: (_) => _handleInput(_brawlhallaIdController),
+                        ),
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: _steamIdController,
+                          decoration: InputDecoration(
+                            labelText: 'Steam ID',
+                            hintText: 'Enter your Steam ID',
+                          ),
+                          onChanged: (_) => _handleInput(_steamIdController),
+                        ),
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: _steamUrlController,
+                          decoration: InputDecoration(
+                            labelText: 'Steam URL',
+                            hintText: 'Enter your Steam Profile URL',
+                          ),
+                          onChanged: (_) => _handleInput(_steamUrlController),
+                        ),
+                        SizedBox(height: 20),
+                        CustomButton(
+                          label: 'Confirm',
+                          onPressed: _submitCredentials,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-              SizedBox(height: 10),
-              TextField(
-                controller: _steamIdController,
-                decoration: InputDecoration(
-                  labelText: 'Steam ID',
-                  hintText: 'Enter your Steam ID',
-                ),
-              ),
-              SizedBox(height: 10),
-              TextField(
-                controller: _steamUrlController,
-                decoration: InputDecoration(
-                  labelText: 'Steam URL',
-                  hintText: 'Enter your Steam Profile URL',
-                ),
-              ),
-              SizedBox(height: 20),
-              CustomButton(
-                label: 'Submit',
-                onPressed: _submitCredentials,
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+          if (_isLoading)
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withOpacity(0.5),
+                child: LoadingIndicator(),
+              ),
+            ),
+        ],
       ),
     );
+  }
+
+
+  void _handleInput(TextEditingController controller) {
+    // Disable other text fields when one starts being edited
+    setState(() {
+      if (controller == _brawlhallaIdController) {
+        _steamIdController.clear();
+        _steamUrlController.clear();
+      } else if (controller == _steamIdController) {
+        _brawlhallaIdController.clear();
+        _steamUrlController.clear();
+      } else if (controller == _steamUrlController) {
+        _brawlhallaIdController.clear();
+        _steamIdController.clear();
+      }
+    });
   }
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1090488824310",
+    "project_id": "ohara-26a63",
+    "storage_bucket": "ohara-26a63.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090488824310:android:02c13c736bc0e1e74257d7",
+        "android_client_info": {
+          "package_name": "com.example.brawlhalla_ohara"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9mqNDW0cLaQ4lAm1toQzEID7LR_UTgZ8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -21,8 +21,10 @@ class AppRoutes {
       case RouteNames.home:
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case RouteNames.playerProfile:
-        return MaterialPageRoute(builder: (_) => PlayerProfileScreen(playerIdentifier: settings.arguments as String?));
-      /*case RouteNames.legendDetail:
+        return MaterialPageRoute(
+            builder: (_) => PlayerProfileScreen(playerIdentifier: settings.arguments as String?)
+        );
+    /*case RouteNames.legendDetail:
         return MaterialPageRoute(builder: (_) => LegendDetailScreen(legendId: settings.arguments as int));
       case RouteNames.rankings:
         return MaterialPageRoute(builder: (_) => RankingsScreen());

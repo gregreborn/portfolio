@@ -7,7 +7,7 @@ class Player {
   final int games;
   final int wins;
   final List<LegendStat> legends;
-  final ClanInfo clan;
+  final ClanInfo? clan;
   final int? rating;
   final int? peakRating;
   final String? tier;
@@ -36,25 +36,42 @@ class Player {
   });
 
   factory Player.fromJson(Map<String, dynamic> json) {
+    var data = json['data'];
+
+    ClanInfo? clanInfo;
+    if (data['clan'] != null) {
+      var clanData = data['clan'];
+      if (clanData is Map<String, dynamic>) {
+        clanInfo = ClanInfo.fromJson(clanData);
+      }
+    }
+
+    List<Team> teams2v2 = [];
+    if (data['2v2'] != null && data['2v2'] is List) {
+      teams2v2 = List.from(data['2v2']).map((x) => Team.fromJson(x as Map<String, dynamic>)).toList();
+    }
+
     return Player(
-      brawlhallaId: json['brawlhalla_id'],
-      name: json['name'],
-      xp: json['xp'],
-      level: json['level'],
-      xpPercentage: json['xp_percentage'].toDouble(),
-      games: json['games'],
-      wins: json['wins'],
-      legends: List<LegendStat>.from(json['legends'].map((x) => LegendStat.fromJson(x))),
-      clan: ClanInfo.fromJson(json['clan']),
-      rating: json['rating'],
-      peakRating: json['peak_rating'],
-      tier: json['tier'],
-      teams2v2: List<Team>.from(json['2v2'].map((x) => Team.fromJson(x))),
-      globalRank: json['global_rank'],
-      regionRank: json['region_rank'],
-      lastSynced: DateTime.fromMillisecondsSinceEpoch(json['lastSynced']),
+      brawlhallaId: data['brawlhalla_id'],
+      name: data['name'],
+      xp: data['xp'],
+      level: data['level'],
+      xpPercentage: (data['xp_percentage'] as num).toDouble(),
+      games: data['games'],
+      wins: data['wins'],
+      legends: List<LegendStat>.from(data['legends'].map((x) => LegendStat.fromJson(x))),
+      clan: clanInfo,
+      rating: data['rating'],
+      peakRating: data['peak_rating'],
+      tier: data['tier'],
+      teams2v2: teams2v2,
+      globalRank: data['global_rank'],
+      regionRank: data['region_rank'],
+      lastSynced: DateTime.now(), // Placeholder for actual logic
     );
   }
+
+
 }
 
 class LegendStat {
@@ -65,7 +82,7 @@ class LegendStat {
   final int matchTime;
   final int games;
   final int wins;
-  final int xpPercentage;
+  final double xpPercentage;
 
   LegendStat({
     required this.legendId,
@@ -87,7 +104,7 @@ class LegendStat {
       matchTime: json['matchtime'],
       games: json['games'],
       wins: json['wins'],
-      xpPercentage: json['xp_percentage'],
+      xpPercentage: (json['xp_percentage'] as num).toDouble(),
     );
   }
 }
@@ -97,7 +114,7 @@ class ClanInfo {
   final String clanName;
   final int clanId;
   final String clanXp;
-  final String personalXp;
+  final int personalXp;
 
   ClanInfo({
     required this.clanName,

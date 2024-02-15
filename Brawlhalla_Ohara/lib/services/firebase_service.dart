@@ -9,9 +9,13 @@ class FirebaseService {
   final FirebaseStorage storage = FirebaseStorage.instance;
 
   Future<String> getImageUrl(String imageName) async {
-    String imageUrl = await storage.ref('legend_images/$imageName').getDownloadURL();
+    String uppercaseImageName = imageName.isNotEmpty
+        ? '${imageName[0].toUpperCase()}${imageName.substring(1)}'
+        : '';
+    String imageUrl = await storage.ref('legends/$uppercaseImageName').getDownloadURL();
     return imageUrl;
   }
+
 
   Future<void> savePlayerData(Map<String, dynamic> playerData) async {
     await firestore.collection('players').doc(playerData['brawlhalla_id'].toString()).set(playerData);

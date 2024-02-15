@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/data.dart';
@@ -13,6 +14,9 @@ class ApiService {
     final response = await http.get(Uri.parse('$_baseUrl/$endpoint'));
 
     if (response.statusCode == 200 && response.headers[HttpHeaders.contentTypeHeader]?.contains('application/json') == true) {
+      if (kDebugMode) {
+        print("Raw JSON response: ${response.body}");
+      } // Add this line to log the raw JSON response
       return json.decode(response.body);
     } else if (response.statusCode == 404) {
       throw Exception('Not Found: The requested resource was not found.');

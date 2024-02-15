@@ -1,3 +1,4 @@
+import 'package:brawlhalla_ohara/utils/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'bloc/player_bloc/player_bloc.dart';
@@ -6,13 +7,13 @@ import 'services/api_service.dart';
 import 'utils/bloc_observer.dart';
 import 'utils/theme.dart';
 import 'views/HomeScreen.dart';
-//import 'package:firebase_core/firebase_core.dart';
-
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //await Firebase.initializeApp();
-
-  // Assuming ApiService requires no initial configuration
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   ApiService apiService = ApiService();
   PlayerRepository playerRepository = PlayerRepository(apiService);
 
@@ -35,10 +36,14 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           title: 'Brawlhalla Ohara',
           theme: AppTheme.darkTheme,
-          home: HomeScreen(),
+          // Set the initial route
+          initialRoute: RouteNames.home,
+          // Use onGenerateRoute to handle named routes
+          onGenerateRoute: AppRoutes.generateRoute,
+          // Optionally set onUnknownRoute if you want to handle undefined routes
+          onUnknownRoute: (settings) => MaterialPageRoute(builder: (context) => Scaffold(body: Center(child: Text('Not Found')))),
         ),
       ),
     );
   }
 }
-
