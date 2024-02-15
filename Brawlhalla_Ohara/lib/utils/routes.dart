@@ -4,7 +4,6 @@ import 'package:brawlhalla_ohara/views/PlayerProfileScreen.dart';
 import 'package:brawlhalla_ohara/views/LegendDetailScreen.dart';
 import 'package:brawlhalla_ohara/views/RankingsScreen.dart';
 import 'package:brawlhalla_ohara/views/MetaAnalysisScreen.dart';
-import 'package:brawlhalla_ohara/views/ClanDetailsScreen.dart';
 import 'package:brawlhalla_ohara/views/SettingsScreen.dart';
 
 class RouteNames {
@@ -14,7 +13,6 @@ class RouteNames {
   static const String rankings = '/rankings';
   static const String metaAnalysis = '/metaAnalysis';
   static const String clanDetails = '/clanDetails';
-  static const String settings = '/settings';
 }
 
 class AppRoutes {
@@ -31,8 +29,6 @@ class AppRoutes {
       case RouteNames.metaAnalysis:
         return MaterialPageRoute(builder: (_) => MetaAnalysisScreen());
       case RouteNames.clanDetails:
-        return MaterialPageRoute(builder: (_) => ClanDetailsScreen(clanId: settings.arguments as int));
-      case RouteNames.settings:
         return MaterialPageRoute(builder: (_) => SettingsScreen());
       default:
         return _errorRoute("Error");
