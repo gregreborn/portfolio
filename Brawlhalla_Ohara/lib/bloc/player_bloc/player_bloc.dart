@@ -5,16 +5,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/player.dart';
 import '../../repository/player_repository.dart';
 
-// player_bloc.dart
 class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
   final PlayerRepository playerRepository;
 
-  PlayerBloc(this.playerRepository) : super(PlayerLoading()) {
+  PlayerBloc(this.playerRepository) : super(PlayerInitial()) {
     on<FetchPlayerById>((event, emit) async {
-      emit(PlayerLoading());
       try {
-        final Player player = await playerRepository.fetchPlayerById(event.brawlhallaId);
-        emit(PlayerLoaded(player));
+        emit(PlayerLoading());
+        final Player playerData = await playerRepository.fetchPlayerById(event.brawlhallaId);
+        final Player rankingData = await playerRepository.fetchRankedById(event.brawlhallaId);
+        emit(PlayerLoaded(playerData, rankingData));
       } catch (error) {
         emit(PlayerError(error.toString()));
       }
@@ -23,9 +23,9 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     on<FetchPlayerBySteamId>((event, emit) async {
       emit(PlayerLoading());
       try {
-        //  repository has a method to fetch by Steam ID
         final Player player = await playerRepository.fetchPlayerBySteamId(event.steamId);
-        emit(PlayerLoaded(player));
+        final Player ranking = await playerRepository.fetchRankedBySteamId(event.steamId);
+        emit(PlayerLoaded(player, ranking));
       } catch (error) {
         emit(PlayerError(error.toString()));
       }
@@ -34,14 +34,14 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
     on<FetchPlayerBySteamUrl>((event, emit) async {
       emit(PlayerLoading());
       try {
-        //  repository has a method to fetch by Steam URL
         final Player player = await playerRepository.fetchPlayerBySteamUrl(event.steamUrl);
-        emit(PlayerLoaded(player));
+        final Player ranking = await playerRepository.fetchRankedBySteamUrl(event.steamUrl);
+        emit(PlayerLoaded(player, ranking));
       } catch (error) {
         emit(PlayerError(error.toString()));
       }
     });
 
-    // Additional handlers for other events
+    // Add more event handlers if needed
   }
 }

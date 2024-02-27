@@ -5,12 +5,15 @@ import '../../models/player.dart';
 // player_state.dart
 abstract class PlayerState {}
 
+class PlayerInitial extends PlayerState {}
+
 class PlayerLoading extends PlayerState {}
 
 class PlayerLoaded extends PlayerState {
-  final Player player;
+  final Player playerData;
+  final Player rankingData;
 
-  PlayerLoaded(this.player);
+  PlayerLoaded(this.playerData, this.rankingData);
 }
 
 class PlayerError extends PlayerState {

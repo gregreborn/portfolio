@@ -9,27 +9,39 @@ class Data {
 }
 
 class Ranking {
-  final String playerId;
-  final String playerName;
   final int rank;
-  final String legendIdUsed;
-  final String weaponUsed;
+  final String name;
+  final int brawlhallaId;
+  final int rating;
+  final String tier;
+  final int games;
+  final int wins;
+  final String region;
+  final int peakRating;
 
   Ranking({
-    required this.playerId,
-    required this.playerName,
     required this.rank,
-    required this.legendIdUsed,
-    required this.weaponUsed,
+    required this.name,
+    required this.brawlhallaId,
+    required this.rating,
+    required this.tier,
+    required this.games,
+    required this.wins,
+    required this.region,
+    required this.peakRating,
   });
 
   factory Ranking.fromJson(Map<String, dynamic> json) {
     return Ranking(
-      playerId: json['player_id'].toString(),
-      playerName: json['player_name'],
       rank: json['rank'],
-      legendIdUsed: json['legend_id_used'].toString(),
-      weaponUsed: json['weapon_used'],
+      name: json['name'],
+      brawlhallaId: json['brawlhalla_id'],
+      rating: json['rating'],
+      tier: json['tier'],
+      games: json['games'],
+      wins: json['wins'],
+      region: json['region'],
+      peakRating: json['peak_rating'],
     );
   }
 }
@@ -82,7 +94,7 @@ class MetaAnalysis {
 
   MetaAnalysis({required this.mostPopularLegend, required this.mostPopularWeapon});
 
-  factory MetaAnalysis.fromRankingList(List<Ranking> rankings) {
+  /*factory MetaAnalysis.fromRankingList(List<Ranking> rankings) {
     // Logic to analyze 1v1 rankings and determine the most popular legend and weapon
     // This is a simplified example. You'll need to aggregate and analyze the data accordingly.
     Map<String, int> legendCounts = {};
@@ -118,6 +130,6 @@ class MetaAnalysis {
     String mostPopularWeapon = weaponCounts.keys.reduce((a, b) => weaponCounts[a]! > weaponCounts[b]! ? a : b);
 
     return MetaAnalysis(mostPopularLegend: mostPopularLegend, mostPopularWeapon: mostPopularWeapon);
-  }
+  }*/
 }
 

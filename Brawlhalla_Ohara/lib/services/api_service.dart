@@ -76,29 +76,37 @@ class ApiService {
 
 
   Future<List<Ranking>> getRanked1v1Data(String region, int page) async {
-    final jsonResponse = await _get('rankings/1v1/$region/$page');
-    List<Ranking> rankings = (jsonResponse as List).map((data) => Ranking.fromJson(data)).toList();
-    return rankings;
+    final jsonResponse = await _get('utils/rankedseasonal?region=$region&page=$page');
+    if (jsonResponse is Map<String, dynamic> && jsonResponse['data'] is List) {
+      List<dynamic> data = jsonResponse['data'];
+      List<Ranking> rankings = data.map((data) => Ranking.fromJson(data)).toList();
+      return rankings;
+    } else {
+      throw Exception("Invalid response format");
+    }
   }
-
-  Future<MetaAnalysis> getMetaAnalysisFromRankings(String region, int page) async {
+/*  Future<MetaAnalysis> getMetaAnalysisFromRankings(String region, int page) async {
     List<Ranking> rankings = await getRanked1v1Data(region, page);
     return MetaAnalysis.fromRankingList(rankings);
-  }
+  }*/
 
 
   Future<List<Ranking2v2>> getRanked2v2Data(String region, int page) async {
     final jsonResponse = await _get('utils/ranked2v2?region=$region&page=$page');
-    List<Ranking2v2> rankings = (jsonResponse['data'] as List)
-        .map((data) => Ranking2v2.fromJson(data))
-        .toList();
-    return rankings;
+    if (jsonResponse is Map<String, dynamic> && jsonResponse['data'] is List) {
+      List<dynamic> data = jsonResponse['data'];
+      List<Ranking2v2> rankings = data.map((data) => Ranking2v2.fromJson(data)).toList();
+      return rankings;
+    } else {
+      throw Exception("Invalid response format");
+    }
   }
 
+/*
   Future<MetaAnalysis> getMetaAnalysisFromRankings2v2(String region, int page) async {
     List<Ranking2v2> rankings = await getRanked2v2Data(region, page);
     return MetaAnalysis.fromRankingList2v2(rankings);
-  }
+  }*/
 
 }
 

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/player_bloc/player_bloc.dart';
@@ -7,6 +8,7 @@ import '../widgets/CustomAppBar.dart';
 import '../widgets/CustomButton.dart';
 import '../utils/routes.dart';
 import 'package:video_player/video_player.dart';
+import '../widgets/CustomNavBar.dart';
 import '../widgets/LoadingIndicator.dart';
 
 
@@ -31,16 +33,22 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_brawlhallaIdController.text.isNotEmpty) {
       final id = int.tryParse(_brawlhallaIdController.text);
       if (id != null) {
-        print('Submitting Brawlhalla ID: $id');
+        if (kDebugMode) {
+          print('Submitting Brawlhalla ID: $id');
+        }
         context.read<PlayerBloc>().add(FetchPlayerById(id));
       } else {
         _showSnackBar('Invalid Brawlhalla ID');
       }
     } else if (_steamIdController.text.isNotEmpty) {
-      print('Submitting Steam ID: ${_steamIdController.text}');
+      if (kDebugMode) {
+        print('Submitting Steam ID: ${_steamIdController.text}');
+      }
       context.read<PlayerBloc>().add(FetchPlayerBySteamId(_steamIdController.text));
     } else if (_steamUrlController.text.isNotEmpty) {
-      print('Submitting Steam URL: ${_steamUrlController.text}');
+      if (kDebugMode) {
+        print('Submitting Steam URL: ${_steamUrlController.text}');
+      }
       context.read<PlayerBloc>().add(FetchPlayerBySteamUrl(_steamUrlController.text));
     } else {
       _showSnackBar('Please fill at least one of the fields: Brawlhalla ID, Steam ID, or Steam URL.');
@@ -76,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
         if (state is PlayerLoading) {
           setState(() => _isLoading = true);
         } else if (state is PlayerLoaded) {
-          Navigator.of(context).pushNamed(RouteNames.playerProfile, arguments: state.player.brawlhallaId.toString());
+          Navigator.of(context).pushNamed(RouteNames.playerProfile, arguments: state.playerData.brawlhallaId.toString());
           setState(() => _isLoading = false);
         } else if (state is PlayerError) {
           _showSnackBar('Error fetching player: ${state.message}');
@@ -86,52 +94,57 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Stack(
         children: [
           Scaffold(
-            appBar: CustomAppBar(title: 'Enter Your Details'),
             body: Column(
               children: [
                 if (_controller.value.isInitialized)
-                  Expanded(
-                    flex: 1,
-                    child: AspectRatio(
-                      aspectRatio: _controller.value.aspectRatio,
+                  AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(25.0),
+                        bottomRight: Radius.circular(25.0),
+                      ),
                       child: VideoPlayer(_controller),
                     ),
                   ),
                 Expanded(
-                  flex: 2,
-                  child: SingleChildScrollView(
+                  child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-
+                        Text(
+                          'Enter Your Details',
+                          style: Theme.of(context).textTheme.headline6,
+                        ),
+                        const SizedBox(height: 8.0),
                         TextField(
                           controller: _brawlhallaIdController,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Brawlhalla ID',
                             hintText: 'Enter your Brawlhalla ID',
                           ),
                           onChanged: (_) => _handleInput(_brawlhallaIdController),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         TextField(
                           controller: _steamIdController,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Steam ID',
                             hintText: 'Enter your Steam ID',
                           ),
                           onChanged: (_) => _handleInput(_steamIdController),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         TextField(
                           controller: _steamUrlController,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             labelText: 'Steam URL',
                             hintText: 'Enter your Steam Profile URL',
                           ),
                           onChanged: (_) => _handleInput(_steamUrlController),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         CustomButton(
                           label: 'Confirm',
                           onPressed: _submitCredentials,
@@ -142,12 +155,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
+            bottomNavigationBar: const CustomNavBar(),
           ),
           if (_isLoading)
             Positioned.fill(
               child: Container(
                 color: Colors.black.withOpacity(0.5),
-                child: LoadingIndicator(),
+                child: const LoadingIndicator(),
               ),
             ),
         ],

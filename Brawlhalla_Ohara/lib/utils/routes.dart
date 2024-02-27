@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:brawlhalla_ohara/views/HomeScreen.dart';
 import 'package:brawlhalla_ohara/views/PlayerProfileScreen.dart';
 import 'package:brawlhalla_ohara/views/LegendDetailScreen.dart';
-import 'package:brawlhalla_ohara/views/RankingsScreen.dart';
+import 'package:brawlhalla_ohara/views/PlayerRankingsScreen.dart';
 import 'package:brawlhalla_ohara/views/MetaAnalysisScreen.dart';
 import 'package:brawlhalla_ohara/views/SettingsScreen.dart';
 
@@ -24,12 +24,13 @@ class AppRoutes {
         return MaterialPageRoute(
             builder: (_) => PlayerProfileScreen(playerIdentifier: settings.arguments as String?)
         );
+    case RouteNames.metaAnalysis:
+    return MaterialPageRoute(builder: (_) => const MetaAnalysisScreen());
     /*case RouteNames.legendDetail:
         return MaterialPageRoute(builder: (_) => LegendDetailScreen(legendId: settings.arguments as int));
       case RouteNames.rankings:
         return MaterialPageRoute(builder: (_) => RankingsScreen());
-      case RouteNames.metaAnalysis:
-        return MaterialPageRoute(builder: (_) => MetaAnalysisScreen());
+
       case RouteNames.clanDetails:
         return MaterialPageRoute(builder: (_) => SettingsScreen());*/
       default:

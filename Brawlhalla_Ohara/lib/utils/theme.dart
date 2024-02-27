@@ -17,7 +17,6 @@ class AppTheme {
         displayMedium: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 22),
         bodyLarge: TextStyle(color: Colors.white, fontSize: 18),
         bodyMedium: TextStyle(color: Colors.white70, fontSize: 16),
-        // Add more styles as needed
       ),
       appBarTheme: const AppBarTheme(
         color: Colors.black,
@@ -30,7 +29,7 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.black, primary: Colors.teal, // Text color
+          foregroundColor: Colors.black, backgroundColor: Colors.teal, // Text color
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),

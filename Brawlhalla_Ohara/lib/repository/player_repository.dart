@@ -44,4 +44,38 @@ class PlayerRepository {
     }
   }
 
+  Future<Player> fetchRankedById(int brawlhallaId) async {
+    try {
+      final response = await _apiService.getRankedById(brawlhallaId);
+      return Player.fromJson(response);
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      rethrow;
+    }
+  }
+
+  Future<Player> fetchRankedBySteamId(String steamId) async {
+    try{
+      return await _apiService.getRankedBySteamId(steamId);
+    }catch (e){
+      if (kDebugMode) {
+        print(e);
+      }
+      rethrow;
+    }
+  }
+
+  Future<Player> fetchRankedBySteamUrl(String steamUrl) async {
+    try{
+      return await _apiService.getRankedBySteamUrl(steamUrl);
+    }catch (e){
+      if (kDebugMode) {
+        print(e);
+      }
+      rethrow;
+    }
+  }
+
 }
