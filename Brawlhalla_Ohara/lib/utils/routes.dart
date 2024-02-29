@@ -3,7 +3,7 @@ import 'package:brawlhalla_ohara/views/HomeScreen.dart';
 import 'package:brawlhalla_ohara/views/PlayerProfileScreen.dart';
 import 'package:brawlhalla_ohara/views/LegendDetailScreen.dart';
 import 'package:brawlhalla_ohara/views/PlayerRankingsScreen.dart';
-import 'package:brawlhalla_ohara/views/MetaAnalysisScreen.dart';
+import 'package:brawlhalla_ohara/views/GlobalRankingScreen.dart';
 import 'package:brawlhalla_ohara/views/SettingsScreen.dart';
 
 class RouteNames {
@@ -29,7 +29,7 @@ class AppRoutes {
           builder: (_) => PlayerProfileScreen(playerIdentifier: playerId),
         );
       case RouteNames.metaAnalysis:
-    return MaterialPageRoute(builder: (_) => const MetaAnalysisScreen());
+    return MaterialPageRoute(builder: (_) => const GlobalRankingScreen());
     /*case RouteNames.legendDetail:
         return MaterialPageRoute(builder: (_) => LegendDetailScreen(legendId: settings.arguments as int));
       case RouteNames.rankings:

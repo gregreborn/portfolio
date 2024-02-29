@@ -1,3 +1,4 @@
+import 'package:brawlhalla_ohara/widgets/LoadingIndicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/data_bloc/data_bloc.dart';
@@ -9,14 +10,14 @@ import '../utils/routes.dart';
 import '../widgets/CustomNavBar.dart';
 import '../widgets/RankListItem.dart';
 
-class MetaAnalysisScreen extends StatefulWidget {
-  const MetaAnalysisScreen({Key? key}) : super(key: key);
+class GlobalRankingScreen extends StatefulWidget {
+  const GlobalRankingScreen({Key? key}) : super(key: key);
 
   @override
-  _MetaAnalysisScreenState createState() => _MetaAnalysisScreenState();
+  _GlobalRankingScreenState createState() => _GlobalRankingScreenState();
 }
 
-class _MetaAnalysisScreenState extends State<MetaAnalysisScreen> {
+class _GlobalRankingScreenState extends State<GlobalRankingScreen> {
   bool is1v1Selected = true;
   String currentRegion = 'us-e'; // Default region
 
@@ -58,13 +59,14 @@ class _MetaAnalysisScreenState extends State<MetaAnalysisScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: const Text('Meta Analysis'),
+        title: const Text('Rankings'),
     actions: [
-    IconButton(
+      Text(is1v1Selected ? '1v1' : '2v2'), // This text changes based on the toggle
+      IconButton(
     icon: Icon(is1v1Selected ? Icons.person : Icons.people),
     onPressed: _toggleRankingType,
     ),
-    DropdownButton<String>(
+      DropdownButton<String>(
     value: currentRegion,
     onChanged: _onRegionChanged,
     items: <String>['us-e', 'us-w', 'eu', 'brz', 'aus', 'sea', 'jpn']
@@ -80,14 +82,14 @@ class _MetaAnalysisScreenState extends State<MetaAnalysisScreen> {
     body: BlocBuilder<DataBloc, DataState>(
     builder: (context, state) {
       if (state is DataLoading) {
-        return const Center(child: CircularProgressIndicator());
+        return const Center(child: LoadingIndicator());
       } else if (state is Data1v1Loaded) {
         // Display 1v1 ranking data
         return ListView.builder(
           itemCount: state.rankings1v1.length,
           itemBuilder: (context, index) {
             final ranking = state.rankings1v1[index];
-            String winLoss = "${ranking.wins}"; // Example, adjust according to your data structure
+            String winLoss = "${ranking.wins}";
             return RankListItem(
               rank: ranking.rank,
               playerName: ranking.name,
@@ -109,13 +111,13 @@ class _MetaAnalysisScreenState extends State<MetaAnalysisScreen> {
           itemCount: state.rankings2v2.length,
           itemBuilder: (context, index) {
             final ranking = state.rankings2v2[index];
-            String winLoss = "${ranking.wins}"; // Example, adjust according to your data structure
+            String winLoss = "${ranking.wins}";
             return RankListItem(
               rank: ranking.rank,
-              playerName: ranking.teamName, // Adjust if your model has a different field
+              playerName: ranking.teamName,
               winLoss: winLoss,
               seasonRating: ranking.rating,
-              onTap: () => _showTeamPlayersOptions(context, ranking), // Pass Ranking2v2 object directly
+              onTap: () => _showTeamPlayersOptions(context, ranking),
             );
           },
         );
@@ -137,9 +139,9 @@ class _MetaAnalysisScreenState extends State<MetaAnalysisScreen> {
           children: <Widget>[
             ListTile(
               leading: const Icon(Icons.person),
-              title: Text('Player One: ${ranking.brawlhallaIdOne}'), // Adjust based on your model
+              title: Text('Player One: ${ranking.brawlhallaIdOne}'),
               onTap: () {
-                Navigator.pop(context); // Close the modal bottom sheet
+                Navigator.pop(context);
                 Navigator.pushNamed(
                   context,
                   RouteNames.home,
@@ -149,7 +151,7 @@ class _MetaAnalysisScreenState extends State<MetaAnalysisScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.person),
-              title: Text('Player Two: ${ranking.brawlhallaIdTwo}'), // Adjust based on your model
+              title: Text('Player Two: ${ranking.brawlhallaIdTwo}'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.pushNamed(
