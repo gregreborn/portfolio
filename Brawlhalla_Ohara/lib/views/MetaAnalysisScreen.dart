@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/data_bloc/data_bloc.dart';
 import '../bloc/data_bloc/data_event.dart';
 import '../bloc/data_bloc/data_state.dart';
+import '../models/data.dart';
+import '../models/player.dart';
 import '../utils/routes.dart';
 import '../widgets/CustomNavBar.dart';
 import '../widgets/RankListItem.dart';
@@ -113,6 +115,7 @@ class _MetaAnalysisScreenState extends State<MetaAnalysisScreen> {
               playerName: ranking.teamName, // Adjust if your model has a different field
               winLoss: winLoss,
               seasonRating: ranking.rating,
+              onTap: () => _showTeamPlayersOptions(context, ranking), // Pass Ranking2v2 object directly
             );
           },
         );
@@ -125,4 +128,42 @@ class _MetaAnalysisScreenState extends State<MetaAnalysisScreen> {
       bottomNavigationBar: const CustomNavBar(),
     );
   }
+
+  void _showTeamPlayersOptions(BuildContext context, Ranking2v2 ranking) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Wrap(
+          children: <Widget>[
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: Text('Player One: ${ranking.brawlhallaIdOne}'), // Adjust based on your model
+              onTap: () {
+                Navigator.pop(context); // Close the modal bottom sheet
+                Navigator.pushNamed(
+                  context,
+                  RouteNames.home,
+                  arguments: ranking.brawlhallaIdOne.toString(),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: Text('Player Two: ${ranking.brawlhallaIdTwo}'), // Adjust based on your model
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(
+                  context,
+                  RouteNames.home,
+                  arguments: ranking.brawlhallaIdTwo.toString(),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
 }

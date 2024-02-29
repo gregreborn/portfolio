@@ -27,16 +27,6 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Player Profile'),
-        actions: [
-          Builder(
-            builder: (context) => IconButton(
-              icon: const Icon(Icons.leaderboard),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            ),
-          ),
-        ],
       ),
       drawer: BlocBuilder<PlayerBloc, PlayerState>(
         builder: (context, state) {
