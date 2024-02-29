@@ -24,14 +24,23 @@ void main() async {
 
   Bloc.observer = SimpleBlocObserver();
 
-  runApp(MyApp(playerRepository: playerRepository, dataRepository: dataRepository));
+  // Define a default region for initial data fetching
+  const defaultRegion = 'us-e'; // You can choose an appropriate default
+
+  runApp(MyApp(playerRepository: playerRepository, dataRepository: dataRepository, defaultRegion: defaultRegion));
 }
 
 class MyApp extends StatelessWidget {
   final PlayerRepository playerRepository;
   final DataRepository dataRepository;
+  final String defaultRegion; // Add a field for the default region
 
-  const MyApp({Key? key, required this.playerRepository, required this.dataRepository}) : super(key: key);
+  const MyApp({
+    Key? key,
+    required this.playerRepository,
+    required this.dataRepository,
+    required this.defaultRegion, // Initialize with the default region
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +52,10 @@ class MyApp extends StatelessWidget {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(create: (context) => PlayerBloc(playerRepository)),
-          BlocProvider(create: (context) => DataBloc(dataRepository)..add(Fetch1v1DataEvent())), // Auto-fetch 1v1 data on app start
+          BlocProvider(
+            create: (context) => DataBloc(dataRepository)
+              ..add(Fetch1v1DataEvent(defaultRegion)), // Pass the defaultRegion to Fetch1v1DataEvent
+          ),
         ],
         child: MaterialApp(
           title: 'Brawlhalla Ohara',

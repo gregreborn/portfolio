@@ -42,7 +42,7 @@ class ApiService {
     return Player.fromJson(jsonResponse);
   }
 
-  Future<Player> getStatsById(int brawlhallaId) async {
+  Future<dynamic> getStatsById(int brawlhallaId) async {
     final jsonResponse = await _get('stats/id?brawlhalla_id=$brawlhallaId');
     return Player.fromJson(jsonResponse);
   }

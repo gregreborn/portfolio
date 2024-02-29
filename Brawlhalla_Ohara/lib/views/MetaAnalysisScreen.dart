@@ -14,87 +14,105 @@ class MetaAnalysisScreen extends StatefulWidget {
 }
 
 class _MetaAnalysisScreenState extends State<MetaAnalysisScreen> {
-  bool is1v1Selected = true; // To track if 1v1 or 2v2 is selected
+  bool is1v1Selected = true;
+  String currentRegion = 'us-e'; // Default region
 
   @override
   void initState() {
     super.initState();
-    // Automatically fetch 1v1 data when the screen is loaded
-    context.read<DataBloc>().add(Fetch1v1DataEvent());
+    // Fetch initial data with default region
+    context.read<DataBloc>().add(Fetch1v1DataEvent('us-e'));
   }
 
   void _toggleRankingType() {
     setState(() {
       is1v1Selected = !is1v1Selected;
-      if (is1v1Selected) {
-        context.read<DataBloc>().add(Fetch1v1DataEvent());
-      } else {
-        context.read<DataBloc>().add(Fetch2v2DataEvent());
-      }
     });
+    // Fetch data for the current selection and region
+    if (is1v1Selected) {
+      context.read<DataBloc>().add(Fetch1v1DataEvent(currentRegion));
+    } else {
+      context.read<DataBloc>().add(Fetch2v2DataEvent(currentRegion));
+    }
+  }
+
+  void _onRegionChanged(String? newRegion) {
+    if (newRegion != null) {
+      setState(() {
+        currentRegion = newRegion;
+      });
+      // Fetch data for the new region
+      if (is1v1Selected) {
+        context.read<DataBloc>().add(Fetch1v1DataEvent(newRegion));
+      } else {
+        context.read<DataBloc>().add(Fetch2v2DataEvent(newRegion));
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+        appBar: AppBar(
         title: const Text('Meta Analysis'),
-        actions: [
-          IconButton(
-            icon: Icon(is1v1Selected ? Icons.person : Icons.people),
-            onPressed: _toggleRankingType,
-          ),
-        ],
-      ),
-      body: BlocBuilder<DataBloc, DataState>(
-        builder: (context, state) {
-          if (state is DataLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is Data1v1Loaded) {
-            // Inside Data1v1Loaded state
-            return // Inside MetaAnalysisScreen's BlocBuilder
-              ListView.builder(
-                itemCount: state.rankings1v1.length,
-                itemBuilder: (context, index) {
-                  final ranking = state.rankings1v1[index];
-                  // Assuming you have wins and losses data available
-                  String winLoss = "${ranking.wins}";
-                  return RankListItem(
-                    rank: ranking.rank,
-                    playerName: ranking.name,
-                    winLoss: winLoss,
-                    seasonRating: ranking.rating,
-                  );
-                },
-              );
-
-
-          } else if (state is Data2v2Loaded) {
-            // Display 2v2 ranking data
-            // Inside Data2v2Loaded state
-            return ListView.builder(
-                itemCount: state.rankings2v2.length,
-                itemBuilder: (context, index) {
-                  final ranking = state.rankings2v2[index];
-                  // Assuming you have wins and losses data available
-                  String winLoss = "${ranking.wins}";
-                  return RankListItem(
-                    rank: ranking.rank,
-                    playerName: ranking.teamName,
-                    winLoss: winLoss,
-                    seasonRating: ranking.rating,
-                  );
-                },
-              );
-
-
-
-          } else if (state is DataError) {
-            return Center(child: Text('Error: ${state.message}'));
-          }
-          return const Center(child: Text('Select a ranking type.'));
-        },
-      ),
+    actions: [
+    IconButton(
+    icon: Icon(is1v1Selected ? Icons.person : Icons.people),
+    onPressed: _toggleRankingType,
+    ),
+    DropdownButton<String>(
+    value: currentRegion,
+    onChanged: _onRegionChanged,
+    items: <String>['us-e', 'us-w', 'eu', 'brz', 'aus', 'sea', 'jpn']
+        .map<DropdownMenuItem<String>>((String value) {
+    return DropdownMenuItem<String>(
+    value: value,
+    child: Text(value),
+    );
+    }).toList(),
+    ),
+    ],
+    ),
+    body: BlocBuilder<DataBloc, DataState>(
+    builder: (context, state) {
+      if (state is DataLoading) {
+        return const Center(child: CircularProgressIndicator());
+      } else if (state is Data1v1Loaded) {
+        // Display 1v1 ranking data
+        return ListView.builder(
+          itemCount: state.rankings1v1.length,
+          itemBuilder: (context, index) {
+            final ranking = state.rankings1v1[index];
+            String winLoss = "${ranking.wins}"; // Example, adjust according to your data structure
+            return RankListItem(
+              rank: ranking.rank,
+              playerName: ranking.name,
+              winLoss: winLoss,
+              seasonRating: ranking.rating,
+            );
+          },
+        );
+      } else if (state is Data2v2Loaded) {
+        // Display 2v2 ranking data
+        return ListView.builder(
+          itemCount: state.rankings2v2.length,
+          itemBuilder: (context, index) {
+            final ranking = state.rankings2v2[index];
+            String winLoss = "${ranking.wins}"; // Example, adjust according to your data structure
+            return RankListItem(
+              rank: ranking.rank,
+              playerName: ranking.teamName, // Adjust if your model has a different field
+              winLoss: winLoss,
+              seasonRating: ranking.rating,
+            );
+          },
+        );
+      } else if (state is DataError) {
+        return Center(child: Text('Error: ${state.message}'));
+      }
+      return const Center(child: Text('Select a ranking type and region.'));
+    },
+    ),
       bottomNavigationBar: const CustomNavBar(),
     );
   }

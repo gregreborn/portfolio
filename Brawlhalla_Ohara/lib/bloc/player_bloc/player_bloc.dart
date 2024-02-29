@@ -42,6 +42,5 @@ class PlayerBloc extends Bloc<PlayerEvent, PlayerState> {
       }
     });
 
-    // Add more event handlers if needed
   }
 }

@@ -46,8 +46,7 @@ class PlayerRepository {
 
   Future<Player> fetchRankedById(int brawlhallaId) async {
     try {
-      final response = await _apiService.getRankedById(brawlhallaId);
-      return Player.fromJson(response);
+      return  await _apiService.getRankedById(brawlhallaId);
     } catch (e) {
       if (kDebugMode) {
         print(e);
