@@ -44,7 +44,6 @@ class Player {
       clanInfo = ClanInfo.fromJson(clanData);
     }
 
-    // Handle potential absence of '2v2' and 'legends' lists
     List<Team> teams2v2 = data['2v2'] != null
         ? List.from(data['2v2']).map((x) => Team.fromJson(x)).toList()
         : [];
@@ -58,8 +57,8 @@ class Player {
       xp: data.containsKey('xp') ? data['xp'] : null,
       level: data.containsKey('level') ? data['level'] : null,
       xpPercentage: data.containsKey('xp_percentage') ? (data['xp_percentage'] as num).toDouble() : null,
-      games: data['games'] ?? 0, // Provide default value if missing
-      wins: data['wins'] ?? 0, // Provide default value if missing
+      games: data['games'] ?? 0,
+      wins: data['wins'] ?? 0,
       legends: legends,
       clan: clanInfo,
       rating: data['rating'],
@@ -68,7 +67,7 @@ class Player {
       teams2v2: teams2v2,
       globalRank: data['global_rank'],
       regionRank: data['region_rank'],
-      lastSynced: DateTime.now(), // Consider parsing from 'lastSynced' if it's provided and important
+      lastSynced: DateTime.now(),
     );
   }
 
@@ -79,13 +78,12 @@ class Player {
 class LegendStat {
   final int legendId;
   final String legendNameKey;
-  final int? xp; // Make optional
-  final int? level; // Make optional
-  final int? matchTime; // Make optional
+  final int? xp;
+  final int? level;
+  final int? matchTime;
   final int games;
   final int wins;
-  final double? xpPercentage; // Make optional
-  // New fields for ranked data
+  final double? xpPercentage;
   final int? rating;
   final int? peakRating;
   final String? tier;
@@ -105,7 +103,6 @@ class LegendStat {
   });
 
   factory LegendStat.fromJson(Map<String, dynamic> json) {
-    // Determine if the JSON is for player stats or ranked data based on the presence of certain fields
     bool isRankedData = json.containsKey('rating') && json.containsKey('tier');
 
     return LegendStat(
@@ -117,7 +114,6 @@ class LegendStat {
       games: json['games'] ?? 0,
       wins: json['wins'] ?? 0,
       xpPercentage: isRankedData ? null : json.containsKey('xp_percentage') ? (json['xp_percentage'] as num).toDouble() : null,
-      // Parse ranked data fields
       rating: json['rating'],
       peakRating: json['peak_rating'],
       tier: json['tier'],

@@ -15,7 +15,6 @@ class CustomButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       child: Text(label),
-      // Add custom styling
     );
   }
 }

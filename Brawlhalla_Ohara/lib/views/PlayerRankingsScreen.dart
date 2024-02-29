@@ -8,7 +8,6 @@ class RankingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Extract the highest 2v2 team based on rating
     final highest2v2 = rankedData?.teams2v2.reduce((current, next) => current.rating > next.rating ? current : next);
 
     return Drawer(

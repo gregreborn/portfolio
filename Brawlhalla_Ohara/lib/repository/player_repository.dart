@@ -12,7 +12,6 @@ class PlayerRepository {
     try {
       return await _apiService.getStatsById(brawlhallaId);
     } catch (e) {
-      // Handle or rethrow the exception
       if (kDebugMode) {
         print(e);
       }
@@ -24,7 +23,6 @@ class PlayerRepository {
     try {
       return await _apiService.getStatsBySteamId(steamId);
     } catch (e) {
-      // Handle or rethrow the exception
       if (kDebugMode) {
         print(e);
       }
@@ -36,7 +34,6 @@ class PlayerRepository {
     try {
       return await _apiService.getStatsBySteamUrl(steamUrl);
     } catch (e) {
-      // Handle or rethrow the exception
       if (kDebugMode) {
         print(e);
       }

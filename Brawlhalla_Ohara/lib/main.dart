@@ -20,12 +20,11 @@ void main() async {
 
   ApiService apiService = ApiService();
   PlayerRepository playerRepository = PlayerRepository(apiService);
-  DataRepository dataRepository = DataRepository(apiService); // Assuming you have a DataRepository
+  DataRepository dataRepository = DataRepository(apiService);
 
   Bloc.observer = SimpleBlocObserver();
 
-  // Define a default region for initial data fetching
-  const defaultRegion = 'us-e'; // You can choose an appropriate default
+  const defaultRegion = 'us-e';
 
   runApp(MyApp(playerRepository: playerRepository, dataRepository: dataRepository, defaultRegion: defaultRegion));
 }
@@ -33,13 +32,13 @@ void main() async {
 class MyApp extends StatelessWidget {
   final PlayerRepository playerRepository;
   final DataRepository dataRepository;
-  final String defaultRegion; // Add a field for the default region
+  final String defaultRegion;
 
   const MyApp({
     Key? key,
     required this.playerRepository,
     required this.dataRepository,
-    required this.defaultRegion, // Initialize with the default region
+    required this.defaultRegion,
   }) : super(key: key);
 
   @override
@@ -54,7 +53,7 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (context) => PlayerBloc(playerRepository)),
           BlocProvider(
             create: (context) => DataBloc(dataRepository)
-              ..add(Fetch1v1DataEvent(defaultRegion)), // Pass the defaultRegion to Fetch1v1DataEvent
+              ..add(Fetch1v1DataEvent(defaultRegion)),
           ),
         ],
         child: MaterialApp(

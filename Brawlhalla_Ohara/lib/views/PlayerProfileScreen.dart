@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/player_bloc/player_bloc.dart';
-import '../bloc/player_bloc/player_event.dart';
 import '../bloc/player_bloc/player_state.dart';
 import '../models/player.dart';
 import '../widgets/CustomNavBar.dart';
@@ -13,7 +12,7 @@ import 'PlayerRankingsScreen.dart';
 class PlayerProfileScreen extends StatefulWidget {
   final String? playerIdentifier;
 
-  const PlayerProfileScreen({Key? key, this.playerIdentifier}) : super(key: key);
+  const PlayerProfileScreen({super.key, this.playerIdentifier});
 
   @override
   _PlayerProfileScreenState createState() => _PlayerProfileScreenState();
@@ -95,7 +94,7 @@ class _PlayerProfileScreenState extends State<PlayerProfileScreen> {
               PlayerStatTile(statLabel: 'Level', statValue: '${player.level}'),
               PlayerStatTile(statLabel: 'Games', statValue: '${player.games}'),
               PlayerStatTile(statLabel: 'Wins', statValue: '${player.wins}'),
-              const SizedBox(height: 16.0), // Add space between stats and highest level legend
+              const SizedBox(height: 16.0),
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16.0),
                 decoration: BoxDecoration(

@@ -10,7 +10,6 @@ class ImageRepository {
     try {
       return await _firebaseService.getImageUrl(imageName);
     } catch (e) {
-      // Handle or rethrow the exception
       if (kDebugMode) {
         print(e);
       }
@@ -18,5 +17,4 @@ class ImageRepository {
     }
   }
 
-// Add methods for caching and retrieving images locally
 }

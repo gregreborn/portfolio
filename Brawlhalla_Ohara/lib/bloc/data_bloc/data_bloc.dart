@@ -8,7 +8,6 @@ class DataBloc extends Bloc<DataEvent, DataState> {
   final DataRepository dataRepository;
 
   DataBloc(this.dataRepository) : super(DataInitial()) {
-    // Inside DataBloc
     on<Fetch1v1DataEvent>((event, emit) async {
       if (kDebugMode) {
         print('Fetching 1v1 Data for region: ${event.region}');

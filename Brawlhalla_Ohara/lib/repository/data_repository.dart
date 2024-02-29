@@ -14,11 +14,5 @@ class DataRepository {
     return await apiService.getRanked2v2Data(region, page);
   }
 
-/*  Future<MetaAnalysis> getMetaAnalysis1v1(String region, int page) async {
-    return await apiService.getMetaAnalysisFromRankings(region, page);
-  }
 
-  Future<MetaAnalysis> getMetaAnalysis2v2(String region, int page) async {
-    return await apiService.getMetaAnalysisFromRankings2v2(region, page);
-  }*/
 }

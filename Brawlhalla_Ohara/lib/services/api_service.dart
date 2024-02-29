@@ -13,17 +13,20 @@ class ApiService {
   Future<dynamic> _get(String endpoint) async {
     final response = await http.get(Uri.parse('$_baseUrl/$endpoint'));
 
-    if (response.statusCode == 200 && response.headers[HttpHeaders.contentTypeHeader]?.contains('application/json') == true) {
+    if (response.statusCode == 200 &&
+        response.headers[HttpHeaders.contentTypeHeader]?.contains(
+            'application/json') == true) {
       if (kDebugMode) {
         print("Raw JSON response: ${response.body}");
-      } // Add this line to log the raw JSON response
+      }
       return json.decode(response.body);
     } else if (response.statusCode == 404) {
       throw Exception('Not Found: The requested resource was not found.');
     } else if (response.statusCode == 500) {
       throw Exception('Server Error: Please try again later.');
     } else {
-      throw Exception('Failed to load data from API with status code: ${response.statusCode}');
+      throw Exception('Failed to load data from API with status code: ${response
+          .statusCode}');
     }
   }
 
@@ -61,7 +64,8 @@ class ApiService {
   Future<List<Legend>> getAllLegends() async {
     final jsonResponse = await _get('legends/all');
     List<dynamic> legendsData = jsonResponse['data'];
-    return legendsData.map((legendData) => Legend.fromJson(legendData)).toList();
+    return legendsData.map((legendData) => Legend.fromJson(legendData))
+        .toList();
   }
 
   Future<Legend> getLegendById(int legendId) async {
@@ -76,37 +80,30 @@ class ApiService {
 
 
   Future<List<Ranking>> getRanked1v1Data(String region, int page) async {
-    final jsonResponse = await _get('utils/rankedseasonal?region=$region&page=$page');
+    final jsonResponse = await _get(
+        'utils/rankedseasonal?region=$region&page=$page');
     if (jsonResponse is Map<String, dynamic> && jsonResponse['data'] is List) {
       List<dynamic> data = jsonResponse['data'];
-      List<Ranking> rankings = data.map((data) => Ranking.fromJson(data)).toList();
+      List<Ranking> rankings = data.map((data) => Ranking.fromJson(data))
+          .toList();
       return rankings;
     } else {
       throw Exception("Invalid response format");
     }
   }
-/*  Future<MetaAnalysis> getMetaAnalysisFromRankings(String region, int page) async {
-    List<Ranking> rankings = await getRanked1v1Data(region, page);
-    return MetaAnalysis.fromRankingList(rankings);
-  }*/
 
 
   Future<List<Ranking2v2>> getRanked2v2Data(String region, int page) async {
-    final jsonResponse = await _get('utils/ranked2v2?region=$region&page=$page');
+    final jsonResponse = await _get(
+        'utils/ranked2v2?region=$region&page=$page');
     if (jsonResponse is Map<String, dynamic> && jsonResponse['data'] is List) {
       List<dynamic> data = jsonResponse['data'];
-      List<Ranking2v2> rankings = data.map((data) => Ranking2v2.fromJson(data)).toList();
+      List<Ranking2v2> rankings = data.map((data) => Ranking2v2.fromJson(data))
+          .toList();
       return rankings;
     } else {
       throw Exception("Invalid response format");
     }
   }
 
-/*
-  Future<MetaAnalysis> getMetaAnalysisFromRankings2v2(String region, int page) async {
-    List<Ranking2v2> rankings = await getRanked2v2Data(region, page);
-    return MetaAnalysis.fromRankingList2v2(rankings);
-  }*/
-
 }
-

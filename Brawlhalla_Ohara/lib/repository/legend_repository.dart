@@ -12,7 +12,6 @@ class LegendRepository {
     try {
       return await _apiService.getAllLegends();
     } catch (e) {
-      // Handle or rethrow the exception
       if (kDebugMode) {
         print(e);
       }
@@ -32,5 +31,4 @@ class LegendRepository {
     }
   }
 
-// Add methods for other legend-related operations
 }

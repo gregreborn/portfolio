@@ -5,7 +5,6 @@ import '../bloc/data_bloc/data_bloc.dart';
 import '../bloc/data_bloc/data_event.dart';
 import '../bloc/data_bloc/data_state.dart';
 import '../models/data.dart';
-import '../models/player.dart';
 import '../utils/routes.dart';
 import '../widgets/CustomNavBar.dart';
 import '../widgets/RankListItem.dart';
@@ -19,12 +18,11 @@ class GlobalRankingScreen extends StatefulWidget {
 
 class _GlobalRankingScreenState extends State<GlobalRankingScreen> {
   bool is1v1Selected = true;
-  String currentRegion = 'us-e'; // Default region
+  String currentRegion = 'us-e';
 
   @override
   void initState() {
     super.initState();
-    // Fetch initial data with default region
     context.read<DataBloc>().add(Fetch1v1DataEvent('us-e'));
   }
 
@@ -33,7 +31,6 @@ class _GlobalRankingScreenState extends State<GlobalRankingScreen> {
     setState(() {
       is1v1Selected = !is1v1Selected;
     });
-    // Fetch data for the current selection and region
     if (is1v1Selected) {
       context.read<DataBloc>().add(Fetch1v1DataEvent(currentRegion));
     } else {
@@ -46,7 +43,6 @@ class _GlobalRankingScreenState extends State<GlobalRankingScreen> {
       setState(() {
         currentRegion = newRegion;
       });
-      // Fetch data for the new region
       if (is1v1Selected) {
         context.read<DataBloc>().add(Fetch1v1DataEvent(newRegion));
       } else {
@@ -57,11 +53,12 @@ class _GlobalRankingScreenState extends State<GlobalRankingScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         appBar: AppBar(
         title: const Text('Rankings'),
     actions: [
-      Text(is1v1Selected ? '1v1' : '2v2'), // This text changes based on the toggle
+      Text(is1v1Selected ? '1v1' : '2v2'),
       IconButton(
     icon: Icon(is1v1Selected ? Icons.person : Icons.people),
     onPressed: _toggleRankingType,
