@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/data_bloc/data_bloc.dart';
 import '../bloc/data_bloc/data_event.dart';
 import '../bloc/data_bloc/data_state.dart';
+import '../utils/routes.dart';
 import '../widgets/CustomNavBar.dart';
 import '../widgets/RankListItem.dart';
 
@@ -23,6 +24,7 @@ class _MetaAnalysisScreenState extends State<MetaAnalysisScreen> {
     // Fetch initial data with default region
     context.read<DataBloc>().add(Fetch1v1DataEvent('us-e'));
   }
+
 
   void _toggleRankingType() {
     setState(() {
@@ -89,6 +91,13 @@ class _MetaAnalysisScreenState extends State<MetaAnalysisScreen> {
               playerName: ranking.name,
               winLoss: winLoss,
               seasonRating: ranking.rating,
+              onTap: () {
+                Navigator.pushReplacementNamed(
+                  context,
+                  RouteNames.home,
+                  arguments: ranking.brawlhallaId.toString(),
+                );
+              },
             );
           },
         );

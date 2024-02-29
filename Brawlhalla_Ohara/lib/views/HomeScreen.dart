@@ -13,9 +13,14 @@ import '../widgets/LoadingIndicator.dart';
 
 
 class HomeScreen extends StatefulWidget {
+  final String? initialBrawlhallaId;
+
+  const HomeScreen({Key? key, this.initialBrawlhallaId}) : super(key: key);
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
+
 
 class _HomeScreenState extends State<HomeScreen> {
   final _brawlhallaIdController = TextEditingController();
@@ -59,6 +64,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    if (widget.initialBrawlhallaId != null) {
+      _brawlhallaIdController.text = widget.initialBrawlhallaId!;
+    }
     _controller = VideoPlayerController.asset('assets/video/homeVideo.mp4')
       ..initialize().then((_) {
         _controller.play();

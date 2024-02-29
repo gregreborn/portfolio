@@ -19,12 +19,16 @@ class AppRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case RouteNames.home:
-        return MaterialPageRoute(builder: (_) => HomeScreen());
-      case RouteNames.playerProfile:
+        final initialBrawlhallaId = settings.arguments as String?;
         return MaterialPageRoute(
-            builder: (_) => PlayerProfileScreen(playerIdentifier: settings.arguments as String?)
+          builder: (_) => HomeScreen(initialBrawlhallaId: initialBrawlhallaId),
         );
-    case RouteNames.metaAnalysis:
+      case RouteNames.playerProfile:
+        final playerId = settings.arguments as String?;
+        return MaterialPageRoute(
+          builder: (_) => PlayerProfileScreen(playerIdentifier: playerId),
+        );
+      case RouteNames.metaAnalysis:
     return MaterialPageRoute(builder: (_) => const MetaAnalysisScreen());
     /*case RouteNames.legendDetail:
         return MaterialPageRoute(builder: (_) => LegendDetailScreen(legendId: settings.arguments as int));
@@ -42,7 +46,7 @@ class AppRoutes {
     return MaterialPageRoute(builder: (_) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('Error'),
+          title: const Text('Error'),
         ),
         body: Center(
           child: Text(message),
