@@ -1,2 +1,2 @@
 Protocol: tcp
-Port: 21	State: filtered
+Port: 22	State: filtered

@@ -1,9 +1,11 @@
 from vulnerability_scanner.scanner import run_scan
 from vulnerability_scanner.validators import resolve_hostname, validate_ip, validate_hostname
 from vulnerability_scanner.helpers import save_results
+from vulnerability_scanner.firewall import block_ip, allow_ip
 
-def main():
-    print("Starting Cybersecurity Toolkit...")  # Debugging
+
+def vulnerability_scanner():
+    print("Starting Vulnerability Scanner...")  # Debugging
 
     target = input("Enter the IP address or hostname to scan: ")
     print(f"User input target: {target}")  # Debugging
@@ -37,5 +39,35 @@ def main():
     else:
         print("Invalid IP address or hostname. Please try again.")
 
+
+def firewall_menu():
+    print("Firewall Simulation Menu:")
+    print("1. Block an IP address")
+    print("2. Allow an IP address")
+    choice = input("Enter your choice (1 or 2): ")
+
+    ip = input("Enter the IP address: ")
+    if not validate_ip(ip):
+        print("Invalid IP address. Exiting.")
+        return
+
+    if choice == "1":
+        block_ip(ip)
+    elif choice == "2":
+        allow_ip(ip)
+    else:
+        print("Invalid choice. Exiting.")
+
+
 if __name__ == "__main__":
-    main()
+    print("Cybersecurity Toolkit")
+    print("1. Vulnerability Scanner")
+    print("2. Firewall Simulation")
+    choice = input("Enter your choice (1 or 2): ")
+
+    if choice == "1":
+        vulnerability_scanner()
+    elif choice == "2":
+        firewall_menu()
+    else:
+        print("Invalid choice. Exiting.")
