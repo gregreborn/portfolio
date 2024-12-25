@@ -1,12 +1,27 @@
 document.getElementById("generate-plan").addEventListener("click", function () {
-    const incidentType = document.getElementById("incident-type").value;
-    const affectedSystems = document.getElementById("affected-systems").value.split(",");
-    const mitigationSteps = document.getElementById("mitigation-steps").value.split("\n");
+    const incidentType = document.getElementById("incident-type").value.trim();
+    const affectedSystems = document.getElementById("affected-systems").value.trim();
+    const mitigationSteps = document.getElementById("mitigation-steps").value.trim();
 
-    if (!incidentType || !affectedSystems || !mitigationSteps) {
-        alert("Please fill in all fields!");
+    // Validate inputs
+    if (!validateIncidentType(incidentType)) {
+        alert("Incident Type is required and must be at least 3 characters.");
         return;
     }
+
+    if (!validateAffectedSystems(affectedSystems)) {
+        alert("Affected Systems must be a comma-separated list.");
+        return;
+    }
+
+    if (!validateMitigationSteps(mitigationSteps)) {
+        alert("Mitigation Steps are required and must be at least one step.");
+        return;
+    }
+
+    // Process input into a plan
+    const systemsList = affectedSystems.split(",").map((system) => system.trim());
+    const stepsList = mitigationSteps.split("\n").map((step) => step.trim());
 
     const plan = `
 Incident Response Plan
@@ -14,7 +29,7 @@ Incident Response Plan
 Incident Type: ${incidentType}
 
 Affected Systems:
-- ${affectedSystems.join("\n- ")}
+- ${systemsList.join("\n- ")}
 
 Immediate Actions:
 1. Isolate affected systems.
@@ -25,7 +40,7 @@ Investigation Steps:
 2. Check logs for suspicious activity.
 
 Mitigation:
-${mitigationSteps.map((step, index) => `${index + 1}. ${step}`).join("\n")}
+${stepsList.map((step, index) => `${index + 1}. ${step}`).join("\n")}
 
 Recovery:
 1. Restore from backups.
@@ -53,3 +68,16 @@ document.getElementById("download-plan").addEventListener("click", function () {
 
     URL.revokeObjectURL(url);
 });
+
+// Validation Functions
+function validateIncidentType(incidentType) {
+    return incidentType.length >= 3; // At least 3 characters
+}
+
+function validateAffectedSystems(affectedSystems) {
+    return affectedSystems.length > 0 && affectedSystems.includes(",");
+}
+
+function validateMitigationSteps(mitigationSteps) {
+    return mitigationSteps.length > 0 && mitigationSteps.split("\n").length > 0;
+}
