@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incident Response Plan</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Incident Response Plan Generator</h1>
+        <form id="incident-form">
+            <label for="incident-type">Incident Type:</label>
+            <input type="text" id="incident-type" placeholder="e.g., Phishing Email" required>
+
+            <label for="affected-systems">Affected Systems:</label>
+            <input type="text" id="affected-systems" placeholder="e.g., User Emails, Finance Database" required>
+
+            <label for="mitigation-steps">Mitigation Steps:</label>
+            <textarea id="mitigation-steps" placeholder="List mitigation steps, one per line" required></textarea>
+
+            <button type="button" id="generate-plan">Generate Plan</button>
+        </form>
+        <div id="output" style="display:none;">
+            <h2>Generated Plan</h2>
+            <pre id="generated-plan"></pre>
+            <button id="download-plan">Download Plan</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

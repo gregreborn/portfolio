@@ -6,6 +6,7 @@ The **Small Business Cybersecurity Toolkit** is a comprehensive solution designe
 - **Firewall Simulation**: Allows businesses to simulate blocking and allowing IP addresses.
 - **Incident Response Plan Generator**: A web-based tool to create and download incident response plans.
 
+
 ## Features
 - **Vulnerability Scanner**:
   - Scans IP addresses and hostname for open ports.
