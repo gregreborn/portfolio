@@ -16,7 +16,7 @@ def vulnerability_scanner():
         resolved_ip = resolve_hostname(target)
         print(f"Resolved IP: {resolved_ip}")  # Debugging
         if resolved_ip is None:
-            print("Failed to resolve hostname. Exiting.")
+            print("Failed to resolve hostname. Please check the hostname and try again.")
             return
         target = resolved_ip
 
@@ -25,6 +25,9 @@ def vulnerability_scanner():
     if validate_ip(target):
         print("Valid IP. Proceeding with scan...")  # Debugging
         port_range = input("Enter the port range to scan (e.g., 1-1024): ") or "1-1024"
+        if not valid_port_range(port_range):
+            print("Invalid port range. Ensure it is in the format start-end (e.g., 1-1024).")
+            return
         print(f"Port range selected: {port_range}")  # Debugging
         results = run_scan(target, port_range)
 
@@ -37,7 +40,7 @@ def vulnerability_scanner():
         save_results(results)
         print("Results saved to logs/scan_results.txt")
     else:
-        print("Invalid IP address or hostname. Please try again.")
+        print("Invalid IP address. Please ensure it is correctly formatted and try again.")
 
 
 def firewall_menu():
@@ -46,17 +49,28 @@ def firewall_menu():
     print("2. Allow an IP address")
     choice = input("Enter your choice (1 or 2): ")
 
+    if choice not in ["1", "2"]:
+        print("Invalid choice. Please select 1 to block or 2 to allow an IP.")
+        return
+
     ip = input("Enter the IP address: ")
     if not validate_ip(ip):
-        print("Invalid IP address. Exiting.")
+        print("Invalid IP address format. Please try again.")
         return
 
     if choice == "1":
         block_ip(ip)
     elif choice == "2":
         allow_ip(ip)
-    else:
-        print("Invalid choice. Exiting.")
+
+
+def valid_port_range(port_range):
+    """Validate port range format and values."""
+    try:
+        start, end = map(int, port_range.split("-"))
+        return 1 <= start <= 65535 and 1 <= end <= 65535 and start <= end
+    except ValueError:
+        return False
 
 
 if __name__ == "__main__":
