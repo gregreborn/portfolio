@@ -1,4 +1,4 @@
-from vulnerability_scanner.scanner import run_scan
+from vulnerability_scanner.scanner import detect_common_vulnerabilities, run_scan
 from vulnerability_scanner.validators import resolve_hostname, validate_ip, validate_hostname
 from vulnerability_scanner.helpers import save_results
 from vulnerability_scanner.firewall import block_ip, allow_ip
@@ -35,6 +35,13 @@ def vulnerability_scanner():
         if "error" in results:
             print(results["error"])
             return
+        
+        # Analyze for vulnerabilities
+        vulnerabilities = detect_common_vulnerabilities(results)
+        if vulnerabilities:
+            print("\nPotential vulnerabilities detected:")
+            for warning in vulnerabilities:
+                print(f"- {warning}")
 
         print("Scan complete. Saving results...")
         save_results(results)
@@ -49,19 +56,20 @@ def firewall_menu():
     print("2. Allow an IP address")
     choice = input("Enter your choice (1 or 2): ")
 
-    if choice not in ["1", "2"]:
-        print("Invalid choice. Please select 1 to block or 2 to allow an IP.")
-        return
-
     ip = input("Enter the IP address: ")
     if not validate_ip(ip):
-        print("Invalid IP address format. Please try again.")
+        print("Invalid IP address. Exiting.")
         return
 
+    protocol = input("Enter the protocol (tcp, udp, or any): ") or "any"
+
     if choice == "1":
-        block_ip(ip)
+        block_ip(ip, protocol)
     elif choice == "2":
-        allow_ip(ip)
+        allow_ip(ip, protocol)
+    else:
+        print("Invalid choice. Exiting.")
+
 
 
 def valid_port_range(port_range):

@@ -16,3 +16,4 @@ The Incident Response Plan Generator is an interactive tool that allows users to
 - User-friendly form for inputting incident details.
 - Automatically formats and downloads the response plan.
 - Works on any modern web browser.
+
