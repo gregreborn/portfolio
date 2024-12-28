@@ -1,12 +1,5 @@
 Protocol: tcp
-Port: 10	State: filtered
-Port: 11	State: filtered
-Port: 12	State: filtered
-Port: 13	State: filtered
-Port: 14	State: filtered
-Port: 15	State: filtered
-Port: 16	State: filtered
-Port: 17	State: filtered
-Port: 18	State: filtered
-Port: 19	State: filtered
-Port: 20	State: filtered
+Port: 22	State: open
+Port: 53	State: open
+Port: 80	State: open
+Port: 443	State: open
