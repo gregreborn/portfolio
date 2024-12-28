@@ -56,19 +56,24 @@ def firewall_menu():
     print("2. Allow an IP address")
     choice = input("Enter your choice (1 or 2): ")
 
-    ip = input("Enter the IP address: ")
-    if not validate_ip(ip):
-        print("Invalid IP address. Exiting.")
+    if choice not in ["1", "2"]:
+        print("Invalid choice. Please enter 1 or 2.")
         return
 
-    protocol = input("Enter the protocol (tcp, udp, or any): ") or "any"
+    ip = input("Enter the IP address: ")
+    if not validate_ip(ip):
+        print("Invalid IP address. Please enter a valid IPv4 address (e.g., 192.168.1.1).")
+        return
+
+    protocol = input("Enter the protocol (tcp, udp, or any): ").strip().lower()
+    if protocol not in ["tcp", "udp", "any"]:
+        print("Invalid protocol. Please enter 'tcp', 'udp', or 'any'.")
+        return
 
     if choice == "1":
         block_ip(ip, protocol)
     elif choice == "2":
         allow_ip(ip, protocol)
-    else:
-        print("Invalid choice. Exiting.")
 
 
 
