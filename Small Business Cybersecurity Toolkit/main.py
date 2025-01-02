@@ -2,52 +2,61 @@ from vulnerability_scanner.scanner import detect_common_vulnerabilities, run_sca
 from vulnerability_scanner.validators import resolve_hostname, validate_ip, validate_hostname, validate_ip_range
 from vulnerability_scanner.helpers import save_results
 from vulnerability_scanner.firewall import block_ip, allow_ip, expand_ip_range, test_connectivity
+from colorama import Fore, Style, init
 
+init(autoreset=True)  # Automatically reset colorama styles after each print
+
+def get_input_with_back(prompt):
+    """Helper function to get input and handle 'back' keyword."""
+    while True:
+        user_input = input(prompt).strip()
+        if user_input.lower() == "back":
+            return None  # Signal to go back
+        return user_input
 
 def vulnerability_scanner():
     print("Starting Vulnerability Scanner...")  # Debugging
 
-    target = input("Enter the IP address or hostname to scan: ")
-    print(f"User input target: {target}")  # Debugging
-
-    # Resolve hostname if applicable
-    if validate_hostname(target):
-        print("Validating hostname...")  # Debugging
-        resolved_ip = resolve_hostname(target)
-        print(f"Resolved IP: {resolved_ip}")  # Debugging
-        if resolved_ip is None:
-            print("Failed to resolve hostname. Please check the hostname and try again.")
+    while True:
+        target = get_input_with_back("Enter the IP address or hostname to scan (type 'back' to return): ")
+        if target is None:  # Handle 'back'
+            print("Returning to the main menu...")
             return
-        target = resolved_ip
 
-    print(f"Target after validation: {target}")  # Debugging
+        print(f"User input target: {target}")  # Debugging
 
-    if validate_ip(target):
-        print("Valid IP. Proceeding with scan...")  # Debugging
-        port_range = input("Enter the port range to scan (e.g., 1-1024): ") or "1-1024"
-        if not valid_port_range(port_range):
-            print("Invalid port range. Ensure it is in the format start-end (e.g., 1-1024).")
-            return
-        print(f"Port range selected: {port_range}")  # Debugging
-        results = run_scan(target, port_range)
+        if validate_hostname(target):
+            resolved_ip = resolve_hostname(target)
+            if resolved_ip is None:
+                print("Failed to resolve hostname. Please check the hostname and try again.")
+                continue
+            target = resolved_ip
 
-        # Handle empty results gracefully
-        if "error" in results:
-            print(results["error"])
-            return
-        
-        # Analyze for vulnerabilities
-        vulnerabilities = detect_common_vulnerabilities(results)
-        if vulnerabilities:
-            print("\nPotential vulnerabilities detected:")
-            for warning in vulnerabilities:
-                print(f"- {warning}")
+        if validate_ip(target):
+            port_range = get_input_with_back("Enter the port range to scan (e.g., 1-1024) or type 'back': ") or "1-1024"
+            if port_range is None:  # Handle 'back'
+                continue
+            if not valid_port_range(port_range):
+                print("Invalid port range. Ensure it is in the format start-end (e.g., 1-1024).")
+                continue
+            results = run_scan(target, port_range)
 
-        print("Scan complete. Saving results...")
-        save_results(results)
-        print("Results saved to logs/scan_results.txt")
-    else:
-        print("Invalid IP address. Please ensure it is correctly formatted and try again.")
+            if "error" in results:
+                print(results["error"])
+                continue
+
+            vulnerabilities = detect_common_vulnerabilities(results)
+            if vulnerabilities:
+                print("\nPotential vulnerabilities detected:")
+                for warning in vulnerabilities:
+                    print(f"- {warning}")
+            print("Scan complete. Saving results...")
+            save_results(results)
+            print("Results saved to logs/scan_results.txt")
+            break
+        else:
+            print("Invalid IP address. Please ensure it is correctly formatted and try again.")
+
 
 
 def batch_process(action):
@@ -109,131 +118,58 @@ def batch_process(action):
         print(f"An error occurred during batch processing: {e}")
 
 
-
 def firewall_menu():
-    while True:  # Keep the menu running until the user explicitly exits
-        print("Firewall Simulation Menu:")
-        print("1. Block an IP address or range")
+    while True:
+        print("Firewall Simulation Menu:(type 'back' to return at any prompt)")
+        print("1. Block an IP address or range ")
         print("2. Allow an IP address or range")
         print("3. Batch Block IPs")
         print("4. Batch Allow IPs")
         print("5. Exit")
         choice = input("Enter your choice (1-5): ").strip()
 
-        if choice not in ["1", "2", "3", "4", "5"]:
-            print("Invalid choice. Please enter a valid option.")
-            continue  # Loop back to the menu
-
         if choice == "5":  # Exit option
-            print("Exiting Firewall Simulation.")
+            print(f"{Fore.GREEN}{Style.BRIGHT}Exiting Firewall Simulation.")
             break
 
+        if choice not in ["1", "2", "3", "4"]:
+            print(f"{Fore.RED}{Style.BRIGHT}Invalid choice. Please enter a valid option.")
+            continue
+
         if choice in ["1", "2"]:
-            ip_input = input("Enter the IP address, IP range (e.g., 192.168.1.0/24), or hostname: ").strip()
-            try:
-                expand_ip_range(ip_input)  # Validate IP or range
-            except ValueError as e:
-                print(str(e))
-                continue
+            while True:
+                ip_input = get_input_with_back("Enter the IP address, IP range (e.g., 192.168.1.0/24), or hostname: ")
+                if ip_input is None:  # Handle 'back'
+                    break
+                try:
+                    expand_ip_range(ip_input)  # Validate IP or range
+                except ValueError as e:
+                    print(f"{Fore.RED}{Style.BRIGHT}{str(e)}")
+                    continue
 
-            port = input("Enter the port (leave blank for all ports): ").strip()
-            if port and not port.isdigit():
-                print("Invalid port. Please enter a valid port number or leave blank for all ports.")
-                continue
+                port = get_input_with_back("Enter the port (leave blank for all ports): ")
+                if port is None:  # Handle 'back'
+                    continue
+                if port and not port.isdigit():
+                    print(f"{Fore.RED}{Style.BRIGHT}Invalid port. Please enter a valid port number or leave blank for all ports.")
+                    continue
 
-            protocol = input("Enter the protocol (tcp, udp, or any): ").strip().lower()
-            if protocol not in ["tcp", "udp", "any"]:
-                print("Invalid protocol. Please enter 'tcp', 'udp', or 'any'.")
-                continue
+                protocol = get_input_with_back("Enter the protocol (tcp, udp, or any): ")
+                if protocol is None:  # Handle 'back'
+                    continue
+                if protocol not in ["tcp", "udp", "any"]:
+                    print(f"{Fore.RED}{Style.BRIGHT}Invalid protocol. Please enter 'tcp', 'udp', or 'any'.")
+                    continue
 
-            if choice == "1":
-                block_ip(ip_input, protocol, port)
-            elif choice == "2":
-                allow_ip(ip_input, protocol, port)
+                if choice == "1":
+                    block_ip(ip_input, protocol, port)
+                elif choice == "2":
+                    allow_ip(ip_input, protocol, port)
+                break
 
         elif choice in ["3", "4"]:
             batch_action = "block" if choice == "3" else "allow"
             batch_process(batch_action)
-
-    print("Firewall Simulation Menu:")
-    print("1. Block an IP address or range")
-    print("2. Allow an IP address or range")
-    print("3. Batch Block IPs")
-    print("4. Batch Allow IPs")
-    choice = input("Enter your choice (1-4): ")
-
-    if choice not in ["1", "2", "3", "4"]:
-        print("Invalid choice. Please enter a valid option.")
-        return
-
-    if choice in ["1", "2"]:
-        ip_input = input("Enter the IP address, IP range (e.g., 192.168.1.0/24), or hostname: ").strip()
-        try:
-            expand_ip_range(ip_input)  # Validate IP or range
-        except ValueError as e:
-            print(str(e))
-            return
-
-        port = input("Enter the port (leave blank for all ports): ").strip()
-        if port and not port.isdigit():
-            print("Invalid port. Please enter a valid port number or leave blank for all ports.")
-            return
-
-        protocol = input("Enter the protocol (tcp, udp, or any): ").strip().lower()
-        if protocol not in ["tcp", "udp", "any"]:
-            print("Invalid protocol. Please enter 'tcp', 'udp', or 'any'.")
-            return
-
-        if choice == "1":
-            block_ip(ip_input, protocol, port)
-        elif choice == "2":
-            allow_ip(ip_input, protocol, port)
-    print("Firewall Simulation Menu:")
-    print("1. Block an IP address or range")
-    print("2. Allow an IP address or range")
-    print("3. Batch Block IPs")
-    print("4. Batch Allow IPs")
-    choice = input("Enter your choice (1-4): ")
-
-    if choice not in ["1", "2", "3", "4"]:
-        print("Invalid choice. Please enter a valid option.")
-        return
-
-    if choice in ["1", "2"]:
-        ip_input = input("Enter the IP address, IP range (e.g., 192.168.1.0/24), or hostname: ")
-        port = input("Enter the port (leave blank for all ports): ").strip() or "any"
-        protocol = input("Enter the protocol (tcp, udp, or any): ").strip().lower()
-
-        # Validate protocol
-        if protocol not in ["tcp", "udp", "any"]:
-            print("Invalid protocol. Please enter 'tcp', 'udp', or 'any'.")
-            return
-
-        # Check if input is an IP range
-        if validate_ip_range(ip_input):
-            print(f"Processing IP range: {ip_input}")
-            ips = expand_ip_range(ip_input)  # Expand the range into individual IPs
-        elif validate_ip(ip_input):
-            ips = [ip_input]  # Single IP
-        else:
-            print(f"Invalid IP or range: {ip_input}. Exiting.")
-            return
-
-        # Optional connectivity test
-        for ip in ips:
-            if not test_connectivity(ip):
-                print(f"IP {ip} is unreachable. Skipping.")
-
-        # Perform the action
-        for ip in ips:
-            if choice == "1":
-                block_ip(ip, protocol, port)
-            elif choice == "2":
-                allow_ip(ip, protocol, port)
-    elif choice == "3":
-        batch_process("block")
-    elif choice == "4":
-        batch_process("allow")
 
 
 def valid_port_range(port_range):
