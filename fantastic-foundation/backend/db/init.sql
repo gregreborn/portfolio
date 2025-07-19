@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS buddies (
   user_id   INT REFERENCES users(id),
   buddy_id  INT REFERENCES users(id),
   status    TEXT CHECK (status IN ('pending','accepted','rejected')),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE(user_id, buddy_id)
 );
 

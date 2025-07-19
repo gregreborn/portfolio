@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
+import buddyRouter from './routes/buddy.routes';
 import userRouter from './routes/user.routes';
 import authRouter from './routes/auth.routes';
 import { requireAuth } from './middleware/auth.middleware';
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use('/auth', authRouter);
 
 app.use('/api/users',requireAuth, userRouter);
+app.use('/api/buddies', requireAuth, buddyRouter);
 
 app.get('/health', (_req, res) => {
   res.send('OK');
